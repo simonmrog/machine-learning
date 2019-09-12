@@ -67,5 +67,16 @@ x_test = scaler.transform (x_test)
 #optimized multiple linear regression model
 model.fit (x_train, y_train)
 y_pred_opt = model.predict (x_test)
-acc = model.score (x_test, y_test)
-print (acc)
+acc_opt = model.score (x_test, y_test)
+print (acc_opt)
+
+print ((acc_opt - acc)/acc * 100, "%")
+
+#plotting results
+plt.scatter (x_train, y_train, color="r")
+plt.scatter (x_test, y_test, color="g")
+plt.plot (x_test, model.predict (x_test), color="b")
+plt.title ("Profit vs R&D spending")
+plt.xlabel ("R&D spending")
+plt.ylabel ("Profit")
+plt.show ()
