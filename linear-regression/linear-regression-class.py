@@ -1,9 +1,10 @@
+import math
 import numpy as np
 import matplotlib.pyplot as plt
 
 class LinearRegression:
 
-  b0 = b1 = 0
+  b0 = b1 = r = 0
 
   def coef (self):
     return (self.b0, self.b1)
@@ -26,6 +27,14 @@ class LinearRegression:
     y = self.b0 + self.b1 * x
     return (y)
 
+  def score (self, x, y):
+  
+    y_pred = self.predict (x)
+
+    var_y_pred = ((y_pred - y_pred.mean ()) * (y_pred - y_pred.mean ())).sum ()
+    var_y = ((y - y.mean ()) * (y - y.mean ())).sum ()
+    r = math.sqrt (var_y_pred / var_y)
+    return (r)
 
 def main ():
 
@@ -37,8 +46,9 @@ def main ():
   regressor = LinearRegression ()
   regressor.fit (x_train, y_train)
   regressor.coef ()
-  y_pred = regressor.predict (x1)
-
+  y_pred = regressor.predict (x_test)
+  r2 = regressor.score (x_train, y_train)
+  print (r2)
   plt.scatter (x_train, y_train)
   plt.plot (x_test, y_pred)
 
