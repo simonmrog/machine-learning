@@ -51,6 +51,7 @@ def main ():
   print (r2)
   plt.scatter (x_train, y_train)
   plt.plot (x_test, y_pred)
+  plt.show ()
 
 
 if __name__ == "__main__":
