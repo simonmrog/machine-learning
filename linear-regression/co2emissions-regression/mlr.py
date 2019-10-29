@@ -1,34 +1,27 @@
-#%%importing libraries
+#%%importing the libraries
 import pandas as pd
-import seaborn as sns
+import numpy as np
 
-from sklearn.svm import SVC
-from sklearn.preprocessing import StandardScaler
+# %%loading the dataset
+dataset = pd.read_csv ("co2emissions.csv")
+x = dataset.iloc [:, 0:-1].values
+y = dataset.iloc [:, -1].values
 
-#%%loading the dataset
-dataframe = pd.read_csv ("winequality-red.csv")
-x = dataframe.iloc[:, :-1]
-y = dataframe.iloc[:, -1]
-
-
-#%%creating pipeline
-steps = [("scaler", StandardScaler ()), ("SVM", SVC ())]
-
-from sklearn.pipeline import Pipeline
-pipeline = Pipeline (steps)
-
-#%%train-test splitting
+# %%train-test-splitting
 from sklearn.model_selection import train_test_split
-x_train, x_test, y_train, y_test = train_test_split (x, y, test_size=0.2, random_state=30, stratify=y)
+x_train, x_test, y_train, y_test = train_test_split (x, y, test_size=0.15)
 
+# %%fitting the model to data
+from sklearn.linear_model import LinearRegression
+model = LinearRegression ()
+model.fit (x_train, y_train)
 
-#%%
-parameteres = {'SVM__C':[0.001,0.1,10,100,10e5], 'SVM__gamma':[0.1,0.01]}
-#%%
-from sklearn.model_selection import GridSearchCV
-grid = GridSearchCV(pipeline, param_grid=parameteres, cv=5)
-grid.fit (x_train, y_train)
-#%%
-print (grid.score (x_test, y_test))
+# %%
+y_pred = model.predict (x_test)
+acc = model.score (x_test, y_test)
+print ("{:.2f}%".format (acc * 100))
+print (model.predict ([[3.66, 6, 11]]))
 
-#%%
+# %%importing pickle
+import pickle
+pickle.dump (model, open ("model.pickle", "wb"))
