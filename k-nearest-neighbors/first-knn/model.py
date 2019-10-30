@@ -45,7 +45,6 @@ elbow_curve = pd.DataFrame (rmse)
 elbow_curve.plot ()
 
 # %%train the model with optimal k-value
-K=7
 model = KNeighborsRegressor (n_neighbors=K)
 model.fit (x_train_scaled, y_train)
 y_pred = model.predict (x_test_scaled)
