@@ -28,6 +28,19 @@ final_schema = StructType (fields=data_schema)
 
 df = spark.read.json ("people.json", schema=final_schema)
 df.printSchema ()
-# %%
+# %%selecting columns of the dataframe
+column = df.select (["age", "name"]).show ()
+  # %%
+df.head (2)
+
+# %%addiing columns
+df = df.withColumnRenamed ("age", "new_age")
+df = df.withColumnRenamed ("new_age", "age")
+df.show ()
+
+# %%using sql on dataframes
+df.createOrReplaceTempView ("people")
+results = spark.sql ("SELECT * FROM people WHERE age=30")
+results.show ()
 
 # %%
