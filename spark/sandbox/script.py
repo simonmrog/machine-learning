@@ -14,8 +14,4 @@ assembler = VectorAssembler (inputCols=["SEPAL_LENGTH", "SEPAL_WIDTH", "PETAL_LE
 df = assembler.transform (dataset)
 df = df.select (["features", "CLASS"])
 df = df.withColumnRenamed ("CLASS", "class")
-
-# %%
-df.show ()
-dataset.show ()
-# %%
+df.printSchema ()
