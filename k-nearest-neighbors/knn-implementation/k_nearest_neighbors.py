@@ -1,3 +1,4 @@
+# %%
 import statistics
 import numpy as np
 from sklearn.metrics import r2_score
@@ -64,3 +65,5 @@ class KNNClassifier:
   def __init__(self, k):
     self.k = k
     print ("KNNClassifier with K =", k)
+
+# %%
