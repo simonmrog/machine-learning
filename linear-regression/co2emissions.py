@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 # %%loading the dataset
-dataset = pd.read_csv ("co2emissions.csv")
+dataset = pd.read_csv ("../../datasets/co2emissions.csv")
 x = dataset.iloc [:, 0:-1].values
 y = dataset.iloc [:, -1].values
 
