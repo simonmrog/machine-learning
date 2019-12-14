@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # %%loading the dataset and exploring data
-dataset = pd.read_csv ("fuel-consumption.csv")
+dataset = pd.read_csv ("../../datasets/fuel-consumption.csv")
 dataset.head ()
 
 # %%summary of the data

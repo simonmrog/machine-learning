@@ -1,3 +1,4 @@
+# %%
 #importing the libraries
 import numpy as np
 import pandas as pd
@@ -5,7 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 #loading the dataset
-dataset = pd.read_csv ("ecommerce-customers.csv")
+dataset = pd.read_csv ("../../datasets/ecommerce-customers.csv")
 x = dataset.iloc [:, 3:-1].values
 y = dataset.iloc [:, -1:].values
 
@@ -33,3 +34,5 @@ print (acc)
 
 #normality for the residual errors
 sns.distplot ((y_test - y_pred))
+
+# %%
