@@ -6,7 +6,7 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.metrics import mean_squared_error 
 
 # %%loading the data
-dataset = pd.read_csv ("iris.csv")
+dataset = pd.read_csv ("../../datasets/iris.csv")
 x = dataset[["SEPAL_LENGTH", "SEPAL_WIDTH"]].to_numpy ()
 y = dataset["PETAL_LENGTH"].to_numpy ()
 dataset.head ()
@@ -23,7 +23,6 @@ from sklearn.preprocessing import MinMaxScaler
 scaler = MinMaxScaler (feature_range=(0, 1))
 x_train_scaled = scaler.fit_transform (x_train)
 x_test_scaled = scaler.transform (x_test)
-
 # %%finding the optimal K-value
 rmse = []
 K = 0

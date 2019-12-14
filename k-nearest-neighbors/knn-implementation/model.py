@@ -4,7 +4,7 @@ from k_nearest_neighbors import KNNRegressor
 import matplotlib.pyplot as plt
 
 # %%loading the dataset
-df = pd.read_csv ("iris.csv")
+df = pd.read_csv ("../../datasets/iris.csv")
 x = df[["SEPAL_LENGTH", "SEPAL_WIDTH"]].to_numpy ()
 y = df["PETAL_LENGTH"].to_numpy ()
 df.head ()

@@ -7,7 +7,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import mean_squared_error 
 
 # %%loading the dataset
-df = pd.read_csv ("teleCust1000t.csv")
+df = pd.read_csv ("../../datasets/teleCust1000t.csv")
 df.head () 
 
 # %%how many points we have of each class
