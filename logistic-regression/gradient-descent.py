@@ -61,8 +61,8 @@ class LogisticRegressionS:
   def __gradient_descent (self):
     #initializing theta values
     for i in x_train[0, :]:
-      self.theta.append (1)
-    self.theta.append (1)
+      self.theta.append (0)
+    self.theta.append (0)
 
     for j in range (self.max_iter): 
       self.J.append (self.__J (self.theta))
@@ -158,9 +158,66 @@ plt.plot (it, J)
 plt.show ()
 
 # %%
+import pandas as pd
 
+data=pd.read_csv("../datasets/social-network-ads.csv",delimiter=",")
+x=data.iloc[:,2:-1].values
+y=data.iloc[:,-1:].values
+y_reshaped = y.reshape(-1, )
 
-# %%
+def normalization_max_min (x):
+  xmin = np.min(x, axis=0)
+  xmax = np.max(x, axis=0)
+  x_norm = (x-xmin)/(xmax-xmin)
+  return(x_norm)
 
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split (normalization_max_min(x), y_reshaped, test_size=0.2, random_state=0)
 
+x1_train_0=[]
+x2_train_0=[]
+x1_train_1=[]
+x2_train_1=[]
+x1=[]
+for i in range (len(y_train)):
+  if y_train[i]==0:
+    x1_train_0.append(x_train[i][0])
+    x2_train_0.append(x_train[i][1])
+  else:
+    x1_train_1.append(x_train[i][0])
+    x2_train_1.append(x_train[i][1])
+  x1.append(x_train[i][0])
+
+# %%testing the model
+model = LogisticRegressionS (learning_rate=5.5, max_iter=811, precision=1e-9)
+model.fit (x_train, y_train)
+theta = model.coefficients ()
+J = model.cost_vector ()
+print ("J:", J[-1])
+
+cost_vs_cycles=plt.plot([i for i in range (811)], J)
+plt.show ()
+
+plt.scatter (x1_train_0, x2_train_0)
+plt.scatter (x1_train_1, x2_train_1)
+plt.plot(x1,-(np.multiply (theta[1], x1) + theta[0]) / theta[2])
+plt.show ()
+
+# %%sklearn model
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import mean_squared_error
+sklearn_model = LogisticRegression ()
+sklearn_model.fit (x_train, y_train)
+theta = [sklearn_model.intercept_[0]]
+theta.append (sklearn_model.coef_[0][0])
+theta.append (sklearn_model.coef_[0][1])
+print ("Theta:", theta_final)
+y_pred = sklearn_model.predict_proba (x_test)[:, 1]
+mse = mean_squared_error (y_test, y_pred)
+print ("J:", mse)
+
+plt.scatter (x1_train_0, x2_train_0)
+plt.scatter (x1_train_1, x2_train_1)
+plt.plot(x1,-(np.multiply (theta[1], x1) + theta[0]) / theta[2])
+plt.show ()
 # %%
