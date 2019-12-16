@@ -3,9 +3,9 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
-class LogisticRegression:
+class LogisticRegressionS:
 
-  def __init__ (self, method="GD", learning_rate=0.001, max_iter=100, precision=0):
+  def __init__ (self, method="GD", learning_rate=0.01, max_iter=100, precision=0):
     self.method = method
     self.theta = []
     self.J = []
@@ -49,7 +49,8 @@ class LogisticRegression:
       weights = self.x[:, k-1]
 
     for i in range (len (self.x)):
-      DJ += (self.__linear_comb (theta, i) - self.y[i]) * weights[i]
+      h_i = self.__sigmoid (theta, i)
+      DJ += (h_i - self.y[i]) * weights[i]
     return ((1.0 / len (self.x)) * DJ)
 
   def __update_theta (self):
@@ -60,13 +61,13 @@ class LogisticRegression:
   def __gradient_descent (self):
     #initializing theta values
     for i in x_train[0, :]:
-      self.theta.append (0)
-    self.theta.append (0)
+      self.theta.append (1)
+    self.theta.append (1)
 
     for j in range (self.max_iter): 
       self.J.append (self.__J (self.theta))
+      # print ("j={}, J(theta)={}".format (j, self.J))
       self.__update_theta ()
-      #print (self.J[j])
       #evaluates convergency
       if (self.precision != 0 and abs (self.__J (self.theta) - self.J[j]) < self.precision):
         break
@@ -78,53 +79,88 @@ class LogisticRegression:
   def fit (self, x_train, y_train):
       self.x = x_train
       self.y = y_train
-      #print ("sum = ", sum ([i*i for i in y_train]) / (2.0 * len (y_train)))
       self.__calculate_theta ()
 
-  def predict (self, x_test):
+  def predict_proba (self, x_test):
       x = np.append (np.ones ((len (x_test), 1)), x_test, axis=1)
       theta = np.array (self.theta)
-      y = x @ theta
+      y = []
+      for xi in x:
+        power = (xi @ theta) * (-1)
+        y.append (1.0 / (1 + math.exp (power)))
+      y = np.array (y)
       return (y)
 
+  def predict (self, x_test):
+    y = self.predict_proba (x_test)
+    return (y >= 0.5)
+
 # %%loading admission predict dataset and scaling for gradient descent
-# import pandas as pd
-# from sklearn.preprocessing import MinMaxScaler
+import pandas as pd
+import seaborn as sns
+from sklearn.preprocessing import MinMaxScaler, LabelEncoder
 
-# dataset = pd.read_csv ("../datasets/Admission_Predict_Ver1.1.csv")
-# df = dataset.iloc [:, 1:]
+df = sns.load_dataset ("iris")
+x = df.iloc[:100, 2].to_numpy ()
+y = df.iloc[:100, -1].to_numpy ()
 
-# x = df[["GRE Score"]].to_numpy ().reshape (-1, 1)
-# y = df.iloc[:, -1].to_numpy ()
+#handling categorical variable
+encoder = LabelEncoder ()
+y = encoder.fit_transform (y)
 
-# scaler = MinMaxScaler ()
+#scaling the dataset
+scaler = MinMaxScaler ()
 # x = scaler.fit_transform (x)
 
-# # %%train-test splitting
-# from sklearn.model_selection import train_test_split
-# x_train, x_test, y_train, y_test = train_test_split (x, y, test_size=0.2, random_state=0)
+# %%train-test splitting
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split (x.reshape (-1, 1), y, test_size=0.2, random_state=0)
 
-# # %%
-# from time import time
+# %%using sklearn logistic regression
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import mean_squared_error
+
+lr = LogisticRegression (solver="lbfgs")
+lr.fit (x_train, y_train)
+y_pred = lr.predict_proba (x_test)[:, 1]
+# print ("sklearn probabilities:", y_pred)
+print ("sklearn coefficients: [{}, {}]".format (lr.intercept_[0], lr.coef_[0][0]))
+mse = mean_squared_error (y_test, y_pred)
+print ("sklearn MSE: {}".format (mse))
+
+plt.scatter (x_test.reshape (-1, 1), y_test, color="blue")
+plt.scatter (x_test.reshape (-1, 1), y_pred, color="red")
+plt.show ()
+
+# %%
+from time import time
 # start = time ()
-# lr = LinearRegression (learning_rate=0.1, max_iter=600, precision=0)
-# lr.fit (x_train, y_train)
-# y_pred = lr.predict (x_train)
-# print (lr.coefficients ())
-# print (lr.mean_squared_error ())
+model = LogisticRegressionS (learning_rate=1.6, max_iter=100, precision=0)
+model.fit (x_train, y_train)
+y_pred = model.predict (x_test)
+y_pred = model.predict_proba (x_test)
+print ("model coefficients:", model.coefficients ())
+# print ("model probabilities:", y_pred)
+mse = mean_squared_error (y_test, y_pred)
+print ("model MSE:", mse)
 
-# J = lr.cost_vector ()
-# it = [i+1 for i in range (len (J))]
+J = model.cost_vector ()
+it = [i+1 for i in range (len (J))]
 # final = time ()
 
 # print (J[-1])
-# print ("time:", final - start)
+# # print ("time:", final - start)
 
-# plt.plot (it, J)
-# plt.show ()
+plt.scatter (x_test.reshape (-1, 1), y_test, color="blue")
+plt.scatter (x_test.reshape (-1, 1), y_pred, color="red")
+plt.show ()
+plt.plot (it, J)
+plt.show ()
 
-# plt.scatter (x, y, color="blue")
-# plt.scatter (x_train, y_pred, color="red")
-# plt.show ()
+# %%
+
+
+# %%
+
 
 # %%
