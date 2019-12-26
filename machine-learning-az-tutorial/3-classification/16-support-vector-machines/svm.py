@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # %%loading the dataset
-df = pd.read_csv ("social-network-ads.csv")
+df = pd.read_csv ("../../../datasets/social-network-ads.csv")
 x = df[["Age", "EstimatedSalary"]].to_numpy ()
 y = df["Purchased"].to_numpy ()
 
@@ -20,8 +20,8 @@ x_train = scaler.fit_transform (x_train)
 x_test = scaler.transform (x_test)
 
 # %%fitting knn to the training set
-from sklearn.neighbors import KNeighborsClassifier
-model = KNeighborsClassifier (n_neighbors=5)
+from sklearn.svm import SVC
+model = SVC (kernel="linear", random_state=0)
 model.fit (x_train, y_train)
 
 # %%predicting results
@@ -50,7 +50,7 @@ def plot_results (x_set, y_set):
   for i, j in enumerate (np.unique (y_set)):
     plt.scatter (x_set[y_set==j, 0], x_set[y_set==j, 1], c = ListedColormap (("red", "green"))(j), label=j)
 
-  plt.title ("K Nearest Neighbors")
+  plt.title ("Support Vector Machine")
   plt.xlabel ("Age")
   plt.ylabel ("EstimatedSalary")
   plt.legend ()
